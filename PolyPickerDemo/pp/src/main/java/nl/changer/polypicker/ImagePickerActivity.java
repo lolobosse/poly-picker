@@ -32,6 +32,7 @@ public class ImagePickerActivity extends AppCompatActivity {
      * Returns the parcelled image uris in the intent with this extra.
      */
     public static final String EXTRA_IMAGE_URIS = "nl.changer.changer.nl.polypicker.extra.selected_image_uris";
+    public static final String EXTRA_IMAGES_TO_DISPLAY = "nl.changer.changer.nl.polypicker.extra.images_to_display";
 
     private Set<Image> mSelectedImages;
     private LinearLayout mSelectedImagesContainer;
@@ -89,11 +90,24 @@ public class ImagePickerActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             populateUi(savedInstanceState);
         }
+
+        if (getIntent().getExtras() != null){
+            // There are pictures to (re)display
+            populateUI(getIntent());
+        }
     }
 
     protected void populateUi(Bundle savedInstanceState) {
         ArrayList<Image> list = savedInstanceState.getParcelableArrayList(KEY_LIST);
+        displayImagesList(list);
+    }
 
+    protected void populateUI(Intent i){
+        ArrayList<Image> list = i.getParcelableArrayListExtra(EXTRA_IMAGES_TO_DISPLAY);
+        displayImagesList(list);
+    }
+
+    private void displayImagesList(ArrayList<Image> list) {
         if (list != null) {
             for (Image image : list) {
                 addImage(image);
@@ -180,14 +194,14 @@ public class ImagePickerActivity extends AppCompatActivity {
         public void onClick(View view) {
             if (view.getId() == R.id.pp__btn_done) {
 
-                Uri[] uris = new Uri[mSelectedImages.size()];
+                Image[] images = new Image[mSelectedImages.size()];
                 int i = 0;
                 for (Image img : mSelectedImages) {
-                    uris[i++] = img.mUri;
+                    images[i++] = img;
                 }
 
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_IMAGE_URIS, uris);
+                intent.putExtra(EXTRA_IMAGE_URIS, images);
                 setResult(Activity.RESULT_OK, intent);
             } else if (view.getId() == R.id.pp__btn_cancel) {
                 setResult(Activity.RESULT_CANCELED);
