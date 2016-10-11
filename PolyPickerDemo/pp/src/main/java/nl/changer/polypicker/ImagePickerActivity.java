@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import nl.changer.polypicker.model.Image;
@@ -34,7 +35,7 @@ public class ImagePickerActivity extends AppCompatActivity {
     public static final String EXTRA_IMAGE_URIS = "nl.changer.changer.nl.polypicker.extra.selected_image_uris";
     public static final String EXTRA_IMAGES_TO_DISPLAY = "nl.changer.changer.nl.polypicker.extra.images_to_display";
 
-    private Set<Image> mSelectedImages;
+    private LinkedHashSet<Image> mSelectedImages;
     private LinearLayout mSelectedImagesContainer;
     protected TextView mSelectedImageEmptyMessage;
 
@@ -80,7 +81,7 @@ public class ImagePickerActivity extends AppCompatActivity {
         mCancelButtonView = (Button) findViewById(R.id.pp__btn_cancel);
         mDoneButtonView = (Button) findViewById(R.id.pp__btn_done);
 
-        mSelectedImages = new HashSet<>();
+        mSelectedImages = new LinkedHashSet<>();
         mImageFetcher = new ImageInternalFetcher(this, 500);
 
         mCancelButtonView.setOnClickListener(mOnFinishGettingImages);
@@ -134,7 +135,7 @@ public class ImagePickerActivity extends AppCompatActivity {
             // this condition may arise when the activity is being
             // restored when sufficient memory is available. onRestoreState()
             // will be called.
-            mSelectedImages = new HashSet<Image>();
+            mSelectedImages = new LinkedHashSet<>();
         }
 
         if (mSelectedImages.size() == mConfig.getSelectionLimit()) {
@@ -149,7 +150,7 @@ public class ImagePickerActivity extends AppCompatActivity {
                     }
                 });
                 mImageFetcher.loadImage(image.mUri, rootView.getImagePreviewView());
-                mSelectedImagesContainer.addView(rootView, 0);
+                mSelectedImagesContainer.addView(rootView);
 
                 if (mSelectedImages.size() >= 1) {
                     mSelectedImagesContainer.setVisibility(View.VISIBLE);
