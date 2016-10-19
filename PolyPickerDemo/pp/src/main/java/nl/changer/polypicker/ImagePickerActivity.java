@@ -2,7 +2,6 @@ package nl.changer.polypicker;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -13,10 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 import nl.changer.polypicker.model.Image;
 import nl.changer.polypicker.utils.ImageInternalFetcher;
@@ -149,7 +148,12 @@ public class ImagePickerActivity extends AppCompatActivity {
                         removeImage(i);
                     }
                 });
-                mImageFetcher.loadImage(image.mUri, rootView.getImagePreviewView());
+                if(image.isWeb == 0) {
+                    mImageFetcher.loadImage(image.mUri, rootView.getImagePreviewView());
+                }
+                else{
+                    Glide.with(this).load(image.mUrl).into(rootView.getImagePreviewView());
+                }
                 mSelectedImagesContainer.addView(rootView);
 
                 if (mSelectedImages.size() >= 1) {
@@ -167,7 +171,7 @@ public class ImagePickerActivity extends AppCompatActivity {
         if (mSelectedImages.remove(image)) {
             for (int i = 0; i < mSelectedImagesContainer.getChildCount(); i++) {
                 View childView = mSelectedImagesContainer.getChildAt(i);
-                if (childView.getTag().equals(image.mUri)) {
+                if (childView.getTag().equals(image)) {
                     mSelectedImagesContainer.removeViewAt(i);
                     break;
                 }
